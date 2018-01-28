@@ -2,24 +2,25 @@ package com.branch.json;
 
 import org.json.JSONArray;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class UserLogsJsonParser {
 
     public static String readLog(String fileName) throws IOException {
-        String result = "";
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
-        StringBuilder sb = new StringBuilder();
-        String line = br.readLine();
-        while (line != null) {
-            sb.append(line);
-            line = br.readLine();
+        File f = new File(fileName);
+        if (f.exists()) {
+            String result = "";
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+            while (line != null) {
+                sb.append(line);
+                line = br.readLine();
+            }
+            result = sb.toString();
+            return result;
         }
-        result = sb.toString();
-        return result;
+        return null;
     }
 
     public static void writeJson(String fileName, JSONArray json) {
