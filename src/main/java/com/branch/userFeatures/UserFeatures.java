@@ -1,11 +1,27 @@
 package com.branch.userFeatures;
 
 import com.branch.UserLoanStatus;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserFeatures {
+
+    private static final String USER_ID = "user_id";
+    private static final String USER_STATUS = "user_status";
+    private static final String CONTACT_LIST_SIZE = "contact_list_size";
+    private static final String OLD_CONTACT_PERCENTAGE = "old_contact_percentage";
+    private static final String FREQUENT_CONTACT_PERCENTAGE = "frequent_contact_percentage";
+    private static final String MOST_COMMON_COUNTRY = "most_common_country";
+    private static final String VIDEO_CALL_PERCENTAGE = "video_call_percentage";
+    private static final String TOTAL_DATA_USAGE = "total_data_usage";
+    private static final String AVERAGE_TIME = "average_time_of_day_in_minutes";
+    private static final String COMMON_DAY_TYPE = "most_common_day_type";
+    private static final String INCLUDES_BLACKLISTED_NUMBER = "includes_blacklisted_number";
+    private static final String MESSAGES_PER_THREAD = "average_messages_per_thread";
+    private static final String SUSPICIOUS_PHRASES = "contains_suspicious_phrases";
+    
     private int userId;
     private UserLoanStatus status;
     private int contactListSize;
@@ -212,5 +228,23 @@ public class UserFeatures {
 
     public void setContainsSuspiciousPhrases(boolean containsSuspiciousPhrases) {
         this.containsSuspiciousPhrases = containsSuspiciousPhrases;
+    }
+
+    public JSONObject serializeToJson() {
+        JSONObject userFeatures = new JSONObject();
+        userFeatures.put(USER_ID, this.getUserId());
+        userFeatures.put(USER_STATUS, this.getStatus());
+        userFeatures.put(CONTACT_LIST_SIZE, this.getContactListSize());
+        userFeatures.put(OLD_CONTACT_PERCENTAGE, this.getOldContactPercentage());
+        userFeatures.put(FREQUENT_CONTACT_PERCENTAGE, this.getFrequentContactPercentage());
+        userFeatures.put(MOST_COMMON_COUNTRY, this.getMostCommonCountry());
+        userFeatures.put(VIDEO_CALL_PERCENTAGE, this.getVideoCallPercentage());
+        userFeatures.put(TOTAL_DATA_USAGE, this.getTotalDataUsage());
+        userFeatures.put(AVERAGE_TIME, this.getAverageTimeOfDayInMinutes());
+        userFeatures.put(COMMON_DAY_TYPE, this.getMostCommonDayTypeForMessages());
+        userFeatures.put(INCLUDES_BLACKLISTED_NUMBER, this.isIncludesBlacklistedContact());
+        userFeatures.put(MESSAGES_PER_THREAD, this.getAverageThreadLength());
+        userFeatures.put(SUSPICIOUS_PHRASES, this.isContainsSuspiciousPhrases());
+        return userFeatures;
     }
 }

@@ -21,26 +21,38 @@ public class ContactListFeatureProcessor {
         features.setContactListSize(features.getContactListSize() + contactListJson.length());
         for(int i = 0; i < contactListJson.length(); i++) {
             JSONObject jsonObject = contactListJson.getJSONObject(i);
-            //Last time contacted
-            int lastTimeContacted = jsonObject.getInt(LAST_TIME_CONTACTED);
-            if (lastTimeContacted < MAX_LAST_TIME && lastTimeContacted > MIN_LAST_TIME) {
-                if (lastTimeContacted < OLD_CONTACT_THRESHOLD) {
-                    features.setOldContactsCount(features.getOldContactsCount() + 1);
-                }
-                features.setTotalContactCountWithinRange(features.getTotalContactCountWithinRange() + 1);
+            processOldContactFeature(jsonObject, features);
+            processTimesContactedFeature(jsonObject, features);
+            processBlacklistFeature(jsonObject, features);
+        }
+    }
+
+    private static void processOldContactFeature(JSONObject jsonObject, UserFeatures features) {
+        //Last time contacted
+        int lastTimeContacted = jsonObject.getInt(LAST_TIME_CONTACTED);
+        if (lastTimeContacted < MAX_LAST_TIME && lastTimeContacted > MIN_LAST_TIME) {
+            if (lastTimeContacted < OLD_CONTACT_THRESHOLD) {
+                features.setOldContactsCount(features.getOldContactsCount() + 1);
             }
-            //# of times contacted
-            int timesContacted = jsonObject.getInt(TIMES_CONTACTED);
-            if (timesContacted > 0) {
-                features.setFrequentContactsCount(features.getFrequentContactsCount() + 1);
-            }
-            //Blacklist check
-            if (!features.isIncludesBlacklistedContact() && jsonObject.has(PHONE_NUMBERS)) {
-                JSONArray phoneNumbers = jsonObject.getJSONArray(PHONE_NUMBERS);
-                for (int j = 0; j < phoneNumbers.length(); j++) {
-                    if (phoneNumbers.getJSONObject(j).getString(PHONE_NUMBER).equals(BLACKLISTED_NUMBER)) {
-                        features.setIncludesBlacklistedContact(true);
-                    }
+            features.setTotalContactCountWithinRange(features.getTotalContactCountWithinRange() + 1);
+        }
+    }
+
+    private static void processTimesContactedFeature(JSONObject jsonObject, UserFeatures features) {
+        //# of times contacted
+        int timesContacted = jsonObject.getInt(TIMES_CONTACTED);
+        if (timesContacted > 0) {
+            features.setFrequentContactsCount(features.getFrequentContactsCount() + 1);
+        }
+    }
+
+    private static void processBlacklistFeature(JSONObject jsonObject, UserFeatures features) {
+        //Blacklist check
+        if (!features.isIncludesBlacklistedContact() && jsonObject.has(PHONE_NUMBERS)) {
+            JSONArray phoneNumbers = jsonObject.getJSONArray(PHONE_NUMBERS);
+            for (int j = 0; j < phoneNumbers.length(); j++) {
+                if (phoneNumbers.getJSONObject(j).getString(PHONE_NUMBER).equals(BLACKLISTED_NUMBER)) {
+                    features.setIncludesBlacklistedContact(true);
                 }
             }
         }
